@@ -1,0 +1,37 @@
+version: "3.8"
+
+volumes:
+  db:
+
+networks:
+  app-net:
+    driver: bridge
+
+services:
+  pg-vector-database:
+    image: ${PG_VECTOR_DATABASE_IMAGE}
+    environment:
+      POSTGRES_USER: ${PG_VECTOR_DATABASE_USER}
+      POSTGRES_PASSWORD: ${PG_VECTOR_DATABASE_PASSWORD}
+      POSTGRES_DB: ${PG_VECTOR_DATABASE_NAME}
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - "${PG_VECTOR_DATABASE_PORT}:5432"
+    networks:
+      - app-net
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+        tag: "{{.Name}}"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${PG_VECTOR_DATABASE_USER} -d ${PG_VECTOR_DATABASE_NAME}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5

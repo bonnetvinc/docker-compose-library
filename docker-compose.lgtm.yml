@@ -1,0 +1,16 @@
+version: "3.8"
+
+volumes:
+  db:
+
+networks:
+  app-net:
+    driver: bridge
+
+services:
+  grafana-otel-lgtm:
+    image: grafana/otel-lgtm:latest
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "3001:3000"
